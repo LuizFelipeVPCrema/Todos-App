@@ -4,31 +4,29 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import { connect } from "react-redux";
 
 import Input from './Input'
-import { addTodo } from "../actions";
+import { addTodo, setTodoText, updateTodo } from "../actions";
 
 class TodoForm extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            text: ''
-        }
-    }
 
     onChangeText(text) {
-        this.setState({
-            text
-        });
+        this.props.dispatchSetTodoText(text);
     }
     
     onPress() {
-        this.state.text.trim() !== '' && this.props.dispatchAddTodo(this.state.text);
-        this.setState({ text: '' });
+        const { todo } = this.props;
+        if(todo.id) 
+            return this.props.dispatchUpdateTodo(todo);
+        
+        
+        const { text } = todo;
+        this.props.dispatchAddTodo(text);
+        
+        
     }
 
 
     render() {
-        const { text } = this.state;
+        const { text, id } = this.props.todo;
         return (
             <View style={styles.formContainer}>
                 <View style={styles.inputContainer}>
@@ -40,14 +38,13 @@ class TodoForm extends React.Component {
                 <View style={styles.buttonContainer}>
                     <Button 
                         onPress={() => this.onPress()}
-                        title="add"
+                        title={id ? "save" : 'add'}
                     />
                 </View>
             </View>
         );
     }
 }
-
 const styles = StyleSheet.create({
     formContainer : {
         flexDirection: 'row',
@@ -62,14 +59,18 @@ const styles = StyleSheet.create({
 
 })
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         dispatchAddTodo: text => dispatch(addTodo(text))
-//     }
-// }
+const mapStateToProps = state => {
+    return {
+        todo: state.editingTodo
+    }
+}
 
-// const mapDispatchToProps = {
-//     dispatchAddTodo: addTodo
-// }
 
-export default connect(null, { dispatchAddTodo: addTodo })(TodoForm);
+export default connect(
+    mapStateToProps, 
+    { 
+        dispatchAddTodo: addTodo,
+        dispatchSetTodoText: setTodoText,
+        dispatchUpdateTodo: updateTodo, 
+    }
+)(TodoForm);
