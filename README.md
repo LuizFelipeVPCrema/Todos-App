@@ -6,7 +6,7 @@ Este é um aplicativo simples de lista de tarefas desenvolvido em React Native, 
 
 - Adicionar novas tarefas.
 - Marcar tarefas como concluídas.
-- Visualizar lista de tarefas.
+- Visualizar/Editar lista de tarefas.
 
 ## Instalação
 
